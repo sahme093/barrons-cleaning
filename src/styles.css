@@ -1,23 +1,25 @@
-/* Sage theme: muted green-gray, serif headings */
+/* Periwinkle theme: soft lavender-blue from the logo, classic serif headings */
 :root {
-  --color-bg: #f3f3ee;
-  --color-surface: #e7e8df;
-  --color-text: #262823;
-  --color-divider: rgba(38, 40, 35, 0.2);
-  --color-accent: #5e6857;
-  --color-accent-100: #ecede6;
-  --color-accent-200: #dfe2d6;
-  --color-accent-300: #c8cdbd;
-  --color-accent-600: #4f5849;
-  --color-accent-700: #41483c;
-  --color-accent-800: #33382f;
-  --color-neutral-200: #e4e5dd;
-  --color-neutral-300: #d3d5ca;
-  --color-neutral-700: #62655c;
-  --color-neutral-800: #45483f;
-  --font-heading: "Newsreader", Georgia, serif;
-  --font-heading-weight: 500;
-  --font-body: "Hanken Grotesk", system-ui, sans-serif;
+  --color-bg: #f8f8fd;
+  --color-surface: #eef1fd;
+  --color-text: #1e2030;
+  --color-divider: rgba(30, 32, 48, 0.14);
+  --color-brand: #c5d3ff; /* logo background */
+  --color-accent: #3d4a9e;
+  --color-accent-100: #eef1ff;
+  --color-accent-200: #dfe6ff;
+  --color-accent-300: #c5d3ff;
+  --color-accent-600: #333f8a;
+  --color-accent-700: #2b3577;
+  --color-accent-800: #222a5e;
+  --color-neutral-200: #e9eaf3;
+  --color-neutral-300: #d8dae8;
+  --color-neutral-700: #5d6077;
+  --color-neutral-800: #424559;
+  --font-heading: "Cormorant Garamond", Georgia, serif;
+  --font-heading-weight: 600;
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --radius: 14px;
   --page-max: 640px;
 }
 
@@ -59,14 +61,14 @@ h4 {
   font-family: var(--font-heading);
   font-weight: var(--font-heading-weight);
   line-height: 1.1;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.005em;
   margin: 0;
   text-wrap: pretty;
 }
-h1 { font-size: 40px; }
-h2 { font-size: 28px; }
-h3 { font-size: 24px; }
-h4 { font-size: 20px; }
+h1 { font-size: 44px; }
+h2 { font-size: 32px; }
+h3 { font-size: 28px; }
+h4 { font-size: 22px; }
 
 .page {
   max-width: var(--page-max);
@@ -94,7 +96,7 @@ h4 { font-size: 20px; }
   min-height: 44px;
   padding: 0 16px;
   border: 1px solid transparent;
-  border-radius: 0;
+  border-radius: 999px;
   font: inherit;
   font-weight: 600;
   font-size: 15px;
@@ -155,7 +157,7 @@ h4 { font-size: 20px; }
   min-height: 48px;
   padding: 0 12px;
   border: 1px solid var(--color-divider);
-  border-radius: 0;
+  border-radius: 10px;
   background: var(--color-surface);
   color: var(--color-text);
   font: inherit;
@@ -207,6 +209,8 @@ h4 { font-size: 20px; }
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   border: 1px solid var(--color-divider);
+  border-radius: 10px;
+  overflow: hidden;
   background: var(--color-surface);
 }
 .seg-opt {
@@ -239,9 +243,6 @@ h4 { font-size: 20px; }
 }
 
 /* ---------- Photos ---------- */
-.grayscale img {
-  filter: grayscale(1);
-}
 .photo {
   position: absolute;
   inset: 0;

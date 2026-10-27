@@ -44,8 +44,10 @@ export default function ServiceArea() {
             : `${zip} is outside our usual area. Request a quote anyway and we'll let you know.`}
         </p>
       )}
+      <h3 style={{ margin: "28px 0 6px" }}>Hours</h3>
+      <p style={{ margin: 0, fontSize: 15 }}>{BIZ.hours}</p>
       <p className="muted" style={{ fontSize: 12, margin: "24px 0 0" }}>
-        {BIZ.name} · {BIZ.phone} · {BIZ.hours}
+        {BIZ.name} · <a href={`tel:${BIZ.phoneRaw}`}>{BIZ.phone}</a>
       </p>
     </section>
   );

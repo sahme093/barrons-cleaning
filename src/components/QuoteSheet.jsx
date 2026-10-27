@@ -32,7 +32,7 @@ function validate(f) {
   if (!/^\d{5}$/.test(f.zip)) e.zip = "Enter a 5-digit ZIP.";
   if (!f.name.trim()) e.name = "Add your name.";
   if (f.phone.replace(/\D/g, "").length < 10) e.phone = "Enter a 10-digit phone number.";
-  if (!/^\S+@\S+\.\S+$/.test(f.email)) e.email = "Enter a valid email.";
+  if (f.email.trim() && !/^\S+@\S+\.\S+$/.test(f.email)) e.email = "Enter a valid email, or leave it blank.";
   return e;
 }
 
@@ -63,6 +63,23 @@ function TextField({ id, label, error, children, ...inputProps }) {
       {children}
     </div>
   );
+}
+
+// Builds the text message the customer sends to the business.
+function smsBody(f) {
+  const svc = BIZ.services[f.service];
+  const freq = (FREQ.find((x) => x[0] === f.freq) || [0, ""])[1];
+  return [
+    `Hi! I'd like a quote from ${BIZ.name}.`,
+    `Service: ${svc ? svc.name : ""} (${freq})`,
+    `Home: ${f.beds} bed, ${f.baths} bath${f.sqft ? ", " + f.sqft + " sq ft" : ""}`,
+    `Address: ${f.address}, ${f.zip}`,
+    `Name: ${f.name}`,
+    `Phone: ${f.phone}`,
+    f.email.trim() && `Email: ${f.email}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 export default function QuoteSheet({ open, form: f, setForm, onClose, onDone }) {
@@ -100,7 +117,8 @@ export default function QuoteSheet({ open, form: f, setForm, onClose, onDone }) 
     } else {
       setErr({});
       setSent(true);
-      // TODO: send the request somewhere (email service, form backend, etc.)
+      // Opens the customer's messages app with the request addressed to the business.
+      window.location.href = `sms:${BIZ.phoneRaw}?&body=${encodeURIComponent(smsBody(f))}`;
     }
     scrollTop();
   };
@@ -157,7 +175,7 @@ export default function QuoteSheet({ open, form: f, setForm, onClose, onDone }) 
         {!sent ? (
           <form noValidate onSubmit={submit} style={{ padding: "20px 16px 32px", display: "flex", flexDirection: "column", gap: 22 }}>
             <p style={{ margin: 0, fontSize: 14, color: "var(--color-neutral-800)" }}>
-              Tell us about your home and we'll follow up with a quote. {BIZ.responseTime}
+              Tell us about your home. When you tap send, your messages app opens with the details ready to text us at {BIZ.phone}.
             </p>
 
             {errCount > 0 && (
@@ -195,6 +213,7 @@ export default function QuoteSheet({ open, form: f, setForm, onClose, onDone }) 
                       gap: 12,
                       minHeight: 50,
                       padding: "10px 14px",
+                      borderRadius: 10,
                       border: sel ? "2px solid var(--color-accent)" : "1px solid var(--color-divider)",
                       background: sel ? "var(--color-accent-100)" : "var(--color-surface)",
                     }}
@@ -232,7 +251,7 @@ export default function QuoteSheet({ open, form: f, setForm, onClose, onDone }) 
                 {STEPPERS.map(([k, label, min, max]) => (
                   <div key={k} style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                     <span style={{ fontSize: 12, color: "var(--color-neutral-800)" }}>{label}</span>
-                    <div style={{ display: "flex", alignItems: "center", border: "1px solid var(--color-divider)", background: "var(--color-surface)" }}>
+                    <div style={{ display: "flex", alignItems: "center", border: "1px solid var(--color-divider)", borderRadius: 10, background: "var(--color-surface)" }}>
                       <button type="button" className="btn btn-plain btn-icon" onClick={() => set(k, Math.max(min, f[k] - 1))} aria-label={`Fewer ${label.toLowerCase()}`} style={{ fontSize: 18 }}>
                         −
                       </button>
@@ -282,15 +301,15 @@ export default function QuoteSheet({ open, form: f, setForm, onClose, onDone }) 
             <Fieldset legend="Contact">
               <TextField id="q-name" label="Name" autoComplete="name" value={f.name} error={err.name} onChange={(e) => set("name", e.target.value)} />
               <TextField id="q-phone" label="Phone" type="tel" autoComplete="tel" value={f.phone} error={err.phone} onChange={(e) => set("phone", e.target.value)} />
-              <TextField id="q-email" label="Email" type="email" autoComplete="email" value={f.email} error={err.email} onChange={(e) => set("email", e.target.value)} />
+              <TextField id="q-email" label="Email (optional)" type="email" autoComplete="email" value={f.email} error={err.email} onChange={(e) => set("email", e.target.value)} />
             </Fieldset>
 
             <button type="submit" className="btn btn-primary btn-wide" style={{ minHeight: 54 }}>
-              <span>Send quote request</span>
+              <span>Text my quote request</span>
               <span aria-hidden="true">→</span>
             </button>
             <p className="muted" style={{ margin: "-10px 0 0", fontSize: 12 }}>
-              No payment needed. Prefer to talk? Call or text {BIZ.phone}.
+              No payment needed. Prefer to talk? Call {BIZ.phone}.
             </p>
           </form>
         ) : (
@@ -300,6 +319,7 @@ export default function QuoteSheet({ open, form: f, setForm, onClose, onDone }) 
               style={{
                 width: 56,
                 height: 56,
+                borderRadius: "50%",
                 background: "var(--color-accent)",
                 color: "var(--color-bg)",
                 display: "grid",
@@ -310,8 +330,13 @@ export default function QuoteSheet({ open, form: f, setForm, onClose, onDone }) 
             >
               ✓
             </span>
-            <h2>Thanks, {f.name.trim().split(" ")[0]}. Your request is in.</h2>
-            <p style={{ margin: 0, fontSize: 15, color: "var(--color-neutral-800)" }}>{BIZ.responseTime}</p>
+            <h2>Almost done, {f.name.trim().split(" ")[0]}. Just hit send.</h2>
+            <p style={{ margin: 0, fontSize: 15, color: "var(--color-neutral-800)" }}>
+              Your messages app should have opened with your request to {BIZ.phone}. Send it and {BIZ.responseTime.charAt(0).toLowerCase() + BIZ.responseTime.slice(1)}
+            </p>
+            <a href={`sms:${BIZ.phoneRaw}?&body=${encodeURIComponent(smsBody(f))}`} className="btn btn-primary" style={{ minHeight: 48 }}>
+              Didn't open? Tap to text us
+            </a>
             <table className="table">
               <tbody>
                 {summary.map(([k, v]) => (

@@ -12,18 +12,20 @@ export default function Header() {
         alignItems: "center",
         gap: 8,
         padding: "10px 12px 10px 16px",
-        borderBottom: "2px solid var(--color-divider)",
+        borderBottom: "1px solid var(--color-divider)",
         background: "var(--color-bg)",
       }}
     >
+      {BIZ.photos.logo && (
+        <img src={BIZ.photos.logo} alt="" width="40" height="40" style={{ borderRadius: "50%", flex: "none" }} />
+      )}
       <div style={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0 }}>
         <span
           style={{
             fontFamily: "var(--font-heading)",
             fontWeight: "var(--font-heading-weight)",
-            fontSize: 16,
-            lineHeight: 1.15,
-            letterSpacing: "-0.015em",
+            fontSize: 19,
+            lineHeight: 1.1,
           }}
         >
           {BIZ.name}

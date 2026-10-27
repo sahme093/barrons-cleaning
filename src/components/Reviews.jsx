@@ -11,9 +11,9 @@ export default function Reviews() {
     <section style={{ padding: "28px 16px 8px" }}>
       <div
         style={{
-          borderTop: "2px solid var(--color-divider)",
-          borderBottom: "2px solid var(--color-divider)",
-          padding: "20px 0",
+          background: "var(--color-accent-100)",
+          borderRadius: "var(--radius)",
+          padding: "20px 16px",
           display: "flex",
           flexDirection: "column",
           gap: 14,
@@ -32,7 +32,7 @@ export default function Reviews() {
         >
           “
         </span>
-        <p aria-live="polite" style={{ margin: 0, fontSize: 20, lineHeight: 1.35, fontWeight: 600, textWrap: "pretty" }}>
+        <p aria-live="polite" style={{ margin: 0, fontFamily: "var(--font-heading)", fontSize: 24, lineHeight: 1.3, fontWeight: 500, textWrap: "pretty" }}>
           {rev.text}
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -63,9 +63,15 @@ export default function Reviews() {
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 0" }}>
         <span style={{ fontSize: 13 }}>
-          <span style={{ color: "var(--color-accent)" }}>★★★★★</span> {BIZ.rating} from {BIZ.reviewCount} reviews
+          {BIZ.rating ? (
+            <>
+              <span style={{ color: "var(--color-accent)" }}>★★★★★</span> {BIZ.rating} from {BIZ.reviewCount} reviews
+            </>
+          ) : (
+            `${BIZ.reviewCount} reviews on Google`
+          )}
         </span>
-        <a href={BIZ.googleUrl} style={{ fontSize: 13, fontWeight: 600 }}>On Google</a>
+        {BIZ.googleUrl !== "#" && <a href={BIZ.googleUrl} style={{ fontSize: 13, fontWeight: 600 }}>On Google</a>}
       </div>
     </section>
   );
